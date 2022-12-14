@@ -20,6 +20,7 @@ type PropertyCustom = {
   maxSize?: number;
   provider: string;
   multiple: boolean;
+  parentArray?: string,
   opts?: ProviderOpts;
 };
 
