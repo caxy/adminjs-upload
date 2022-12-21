@@ -1,10 +1,10 @@
 {
-  "name": "@adminjs/upload",
+  "name": "@caxy/adminjs-upload-array",
   "version": "3.0.1",
   "main": "index.js",
   "types": "types/index.d.ts",
   "private": false,
-  "repository": "git@github.com:SoftwareBrothers/adminjs-upload.git",
+  "repository": "git@github.com:caxy/adminjs-upload.git",
   "license": "MIT",
   "scripts": {
     "release": "semantic-release",

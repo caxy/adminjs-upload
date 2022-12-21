@@ -1,4 +1,4 @@
-# Upload Feature for AdminJS
+# Upload Feature for AdminJS with support for uploading arrays
 
 This is an official [AdminJS](https://github.com/SoftwareBrothers/adminjs) feature which uploads files to resources.
 
