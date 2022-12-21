@@ -1,4 +1,4 @@
-import { flat, PropertyJSON } from 'admin-bro'
+import { flat, PropertyJSON } from 'adminjs'
 import PropertyCustom from '../types/property-custom.type'
 
 export default (property: PropertyJSON): PropertyCustom => {
