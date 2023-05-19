@@ -102,22 +102,30 @@ const uploadFileFeature = (config: UploadOptions): FeatureType => {
 
   const fileProperty = parentArray ? `${parentArray}.${properties.file}` : properties.file
 
+  const components = { edit: '', list: '', show: '' };
+
+  if (!config.componentLoader) {
+    components.edit = AdminJS.bundle(
+      '../../../src/features/upload-file/components/edit',
+    );
+    components.list = AdminJS.bundle(
+      '../../../src/features/upload-file/components/list',
+    );
+    components.show = AdminJS.bundle(
+      '../../../src/features/upload-file/components/show',
+    );
+  } else {
+    components.edit = config.componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit');
+    components.list = config.componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list');
+    components.show = config.componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show');
+  }
+
   const uploadFeature = buildFeature({
     properties: {
       [fileProperty]: {
         custom,
         isVisible: { show: true, edit: true, list: true, filter: false },
-        components: {
-          edit: AdminJS.bundle(
-            '../../../src/features/upload-file/components/edit',
-          ),
-          list: AdminJS.bundle(
-            '../../../src/features/upload-file/components/list',
-          ),
-          show: AdminJS.bundle(
-            '../../../src/features/upload-file/components/show',
-          ),
-        },
+        components,
       },
     },
     actions: {
