@@ -20,11 +20,19 @@ const DEFAULT_FILE_PROPERTY = 'file'
 const DEFAULT_FILE_PATH_PROPERTY = 'filePath'
 const DEFAULT_FILES_TO_DELETE_PROPERTY = 'filesToDelete'
 
-export const registerComponents = (componentLoader: ComponentLoader) => {
+export function registerComponents(componentLoader?: ComponentLoader) {
+  if (componentLoader) {
+    return {
+      UploadFileEdit: componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit'),
+      UploadFileList: componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list'),
+      UploadFileShow: componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show'),
+    }
+  }
+
   return {
-    UploadFileEdit: componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit'),
-    UploadFileList: componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list'),
-    UploadFileShow: componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show'),
+    UploadFileEdit: AdminJS.bundle('../../../src/features/upload-file/components/edit'),
+    UploadFileList: AdminJS.bundle('../../../src/features/upload-file/components/list'),
+    UploadFileShow: AdminJS.bundle('../../../src/features/upload-file/components/show'),
   }
 }
 
@@ -107,33 +115,18 @@ const uploadFileFeature = (config: UploadOptions): FeatureType => {
 
   const fileProperty = parentArray ? `${parentArray}.${properties.file}` : properties.file
 
-  let components = { edit: '', list: '', show: '' };
-
-  //TODO: refactor this
-  if (!config.componentLoader) {
-    console.log('don\'t have componentLoader, using deprecated bundle()')
-    components.edit = AdminJS.bundle(
-      '../../../src/features/upload-file/components/edit',
-    );
-    components.list = AdminJS.bundle(
-      '../../../src/features/upload-file/components/list',
-    );
-    components.show = AdminJS.bundle(
-      '../../../src/features/upload-file/components/show',
-    );
-  } else {
-    console.log('have a componentLoader, using it')
-    const { UploadFileEdit: edit, UploadFileList: list, UploadFileShow: show } = registerComponents(config.componentLoader);
-    components = { edit, list, show };
-    console.log(config.componentLoader.getComponents());
-  }
+  const { UploadFileEdit, UploadFileList, UploadFileShow } = registerComponents(config.componentLoader);
 
   const uploadFeature = buildFeature({
     properties: {
       [fileProperty]: {
         custom,
         isVisible: { show: true, edit: true, list: true, filter: false },
-        components,
+        components: {
+          edit: UploadFileEdit,
+          list: UploadFileList,
+          show: UploadFileShow,
+        },
       },
     },
     actions: {
