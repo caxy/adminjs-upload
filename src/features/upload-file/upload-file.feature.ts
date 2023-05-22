@@ -1,10 +1,10 @@
 import AdminJS, {
   After,
-  buildFeature,
+  buildFeature, ComponentLoader,
   FeatureType,
   ListActionResponse,
   RecordActionResponse,
-} from 'adminjs'
+} from 'adminjs';
 import { ERROR_MESSAGES } from './constants'
 import { deleteFileFactory } from './factories/delete-file-factory'
 import { deleteFilesFactory } from './factories/delete-files-factory'
@@ -16,15 +16,20 @@ import UploadOptions, { UploadOptionsWithDefault } from './types/upload-options.
 import { fillRecordWithPath } from './utils/fill-record-with-path'
 import { getProvider } from './utils/get-provider'
 
-export type ProviderOptions = Required<
-  Exclude<UploadOptions['provider'], BaseProvider>
->;
-
 const DEFAULT_FILE_PROPERTY = 'file'
 const DEFAULT_FILE_PATH_PROPERTY = 'filePath'
 const DEFAULT_FILES_TO_DELETE_PROPERTY = 'filesToDelete'
 
+export const registerComponents = (componentLoader: ComponentLoader) => {
+  return {
+    UploadFileEdit: componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit'),
+    UploadFileList: componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list'),
+    UploadFileShow: componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show'),
+  }
+}
+
 const uploadFileFeature = (config: UploadOptions): FeatureType => {
+  console.log('in uploadFileFeature');
   const { provider: providerOptions, validation, multiple, parentArray } = config
 
   const configWithDefault: UploadOptionsWithDefault = {
@@ -102,9 +107,11 @@ const uploadFileFeature = (config: UploadOptions): FeatureType => {
 
   const fileProperty = parentArray ? `${parentArray}.${properties.file}` : properties.file
 
-  const components = { edit: '', list: '', show: '' };
+  let components = { edit: '', list: '', show: '' };
 
+  //TODO: refactor this
   if (!config.componentLoader) {
+    console.log('don\'t have componentLoader, using deprecated bundle()')
     components.edit = AdminJS.bundle(
       '../../../src/features/upload-file/components/edit',
     );
@@ -115,9 +122,10 @@ const uploadFileFeature = (config: UploadOptions): FeatureType => {
       '../../../src/features/upload-file/components/show',
     );
   } else {
-    components.edit = config.componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit');
-    components.list = config.componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list');
-    components.show = config.componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show');
+    console.log('have a componentLoader, using it')
+    const { UploadFileEdit: edit, UploadFileList: list, UploadFileShow: show } = registerComponents(config.componentLoader);
+    components = { edit, list, show };
+    console.log(config.componentLoader.getComponents());
   }
 
   const uploadFeature = buildFeature({
