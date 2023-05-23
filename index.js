@@ -19,3 +19,4 @@ const { BaseProvider } = regularExport
 module.exports = uploadFeature
 module.exports.BaseProvider = BaseProvider
 module.exports.default = uploadFeature
+module.exports.registerComponents = regularExport.registerComponents
