@@ -1,8 +1,8 @@
 import chai, { expect } from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import { After, RecordActionResponse, ActionRequest, ActionContext } from 'adminjs'
-import { BaseProvider } from './providers/base-provider'
+import AdminJS, { After, RecordActionResponse, ActionRequest, ActionContext } from 'adminjs'
+import { BaseProvider } from './providers'
 import UploadOptions from './types/upload-options.type'
 
 import uploadFile from './upload-file.feature'
@@ -14,6 +14,7 @@ describe('uploadFileFeature', () => {
   let provider: BaseProvider
   let properties: UploadOptions['properties']
   const resolvedS3Path = 'resolvedS3Path'
+  const adminJs = new AdminJS()
 
   beforeEach(() => {
     provider = stubProvider(resolvedS3Path)
@@ -43,7 +44,7 @@ describe('uploadFileFeature', () => {
     const key = 'someKeyValue'
 
     const getAfterHook = (options: UploadOptions): After<RecordActionResponse> => {
-      const feature = uploadFile(options)({})
+      const feature = uploadFile(options)(adminJs, {})
       return feature.actions?.show?.after?.[0] as After<RecordActionResponse>
     }
 

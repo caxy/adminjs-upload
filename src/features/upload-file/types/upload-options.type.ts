@@ -1,4 +1,4 @@
-import { BaseRecord } from 'adminjs'
+import { BaseRecord, ComponentLoader } from 'adminjs'
 import { AWSOptions } from '../providers/aws-provider'
 import { BaseProvider } from '../providers/base-provider'
 import { LocalUploadOptions } from '../providers/local-provider'
@@ -89,6 +89,11 @@ export type UploadOptions = {
      */
     maxSize?: number,
   },
+
+  /**
+   * The component loader instance to use rather than the deprecated AdminJS.bundle()
+   */
+  componentLoader?: ComponentLoader
 }
 
 export type UploadOptionsWithDefault = {

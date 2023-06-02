@@ -1,6 +1,6 @@
 {
   "name": "@caxy/adminjs-upload-array",
-  "version": "3.0.2",
+  "version": "3.0.4",
   "main": "index.js",
   "types": "types/index.d.ts",
   "private": false,
@@ -21,7 +21,7 @@
     }
   },
   "peerDependencies": {
-    "adminjs": ">=6.0.0"
+    "adminjs": ">=6.8.0"
   },
   "optionalDependencies": {
     "@google-cloud/storage": "^5.3.0",
@@ -54,6 +54,9 @@
     "sinon": "^9.0.3",
     "sinon-chai": "^3.5.0",
     "ts-node": "^9.0.0",
-    "typescript": "^3.9.7"
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "@tiptap/pm": "^2.0.3"
   }
 }

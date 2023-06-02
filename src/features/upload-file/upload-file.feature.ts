@@ -1,10 +1,10 @@
 import AdminJS, {
   After,
-  buildFeature,
+  buildFeature, ComponentLoader,
   FeatureType,
   ListActionResponse,
   RecordActionResponse,
-} from 'adminjs'
+} from 'adminjs';
 import { ERROR_MESSAGES } from './constants'
 import { deleteFileFactory } from './factories/delete-file-factory'
 import { deleteFilesFactory } from './factories/delete-files-factory'
@@ -16,15 +16,28 @@ import UploadOptions, { UploadOptionsWithDefault } from './types/upload-options.
 import { fillRecordWithPath } from './utils/fill-record-with-path'
 import { getProvider } from './utils/get-provider'
 
-export type ProviderOptions = Required<
-  Exclude<UploadOptions['provider'], BaseProvider>
->;
-
 const DEFAULT_FILE_PROPERTY = 'file'
 const DEFAULT_FILE_PATH_PROPERTY = 'filePath'
 const DEFAULT_FILES_TO_DELETE_PROPERTY = 'filesToDelete'
 
+export function registerComponents(componentLoader?: ComponentLoader) {
+  if (componentLoader) {
+    return {
+      UploadFileEdit: componentLoader.add('UploadFileEdit', '../../../src/features/upload-file/components/edit'),
+      UploadFileList: componentLoader.add('UploadFileList', '../../../src/features/upload-file/components/list'),
+      UploadFileShow: componentLoader.add('UploadFileShow', '../../../src/features/upload-file/components/show'),
+    }
+  }
+
+  return {
+    UploadFileEdit: AdminJS.bundle('../../../src/features/upload-file/components/edit'),
+    UploadFileList: AdminJS.bundle('../../../src/features/upload-file/components/list'),
+    UploadFileShow: AdminJS.bundle('../../../src/features/upload-file/components/show'),
+  }
+}
+
 const uploadFileFeature = (config: UploadOptions): FeatureType => {
+  console.log('in uploadFileFeature');
   const { provider: providerOptions, validation, multiple, parentArray } = config
 
   const configWithDefault: UploadOptionsWithDefault = {
@@ -102,21 +115,17 @@ const uploadFileFeature = (config: UploadOptions): FeatureType => {
 
   const fileProperty = parentArray ? `${parentArray}.${properties.file}` : properties.file
 
+  const { UploadFileEdit, UploadFileList, UploadFileShow } = registerComponents(config.componentLoader);
+
   const uploadFeature = buildFeature({
     properties: {
       [fileProperty]: {
         custom,
         isVisible: { show: true, edit: true, list: true, filter: false },
         components: {
-          edit: AdminJS.bundle(
-            '../../../src/features/upload-file/components/edit',
-          ),
-          list: AdminJS.bundle(
-            '../../../src/features/upload-file/components/list',
-          ),
-          show: AdminJS.bundle(
-            '../../../src/features/upload-file/components/show',
-          ),
+          edit: UploadFileEdit,
+          list: UploadFileList,
+          show: UploadFileShow,
         },
       },
     },
